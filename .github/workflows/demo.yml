@@ -17,3 +17,5 @@ jobs:
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
       - run: curl https://wttr.in/St.Gallen
+      - run: curl https://qrenco.de/liquidweb.com
+      - run: curl curl https://ipinfo.io/city
