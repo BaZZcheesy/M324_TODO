@@ -107,7 +107,7 @@ class App extends React.Component {
       .then(response => response.json())
       .then(data => {
         console.log("Receiving task list data from Spring-Server: ");
-        console.log(data);
+        console.log(data.taskdescription);
         this.setState({todos: data});  // set the whole list at once
       })
       .catch(error => console.log(error))

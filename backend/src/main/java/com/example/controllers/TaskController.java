@@ -41,17 +41,15 @@ public class TaskController {
 
 	@CrossOrigin
 	@PostMapping("/add")
-	public ResponseEntity<Task> addTask(@RequestBody String taskdescription) {
-		Task task = new Task();
-		task.setTaskdescription(taskdescription);
+	public ResponseEntity<Task> addTask(@RequestBody Task task) {
 		task = taskrepo.save(task);
 		return ResponseEntity.ok(task);
 	}
 
 	@CrossOrigin
 	@PostMapping("/delete")
-	public String delTask(@RequestBody String taskdescription) {
-		Task task = taskrepo.findByTaskdescription(taskdescription);
+	public String delTask(@RequestBody Task taskToFind) {
+		Task task = taskrepo.findByTaskdescription(taskToFind.getTaskdescription());
 		if (task != null) {
 			taskrepo.delete(task);
 			return "deleted: " + task.toString();
