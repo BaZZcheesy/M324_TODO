@@ -51,7 +51,8 @@ class App extends React.Component {
     super(props);      // ensure that the constructor of the parent class (React.Component) is properly called.
     this.state = {
       todos: typeof props.todos === 'undefined' ? [] : props.todos,
-      taskdescription: ""
+      taskdescription: "",
+      priority: ""
     };
     // **( Remark:
     // If props.todos is of the type undefined, the expression typeof props.todos === 'undefined' will return true,
@@ -66,8 +67,12 @@ class App extends React.Component {
   ** determines the component's behavior and render.
   ** If we used the value directly from the HTML form field, we wouldn't be able to update the component's state and react to changes in the input field.
   */
-  handleChange = event => {
-    this.setState({ taskdescription: event.target.value });
+  handleChangeDesc = event => {
+    this.setState({ taskdescription: event.target.value});
+  }
+
+  handleChangeNum = event => {
+    this.setState({ priority: event.target.value});
   }
 
  /** Is called when the html form is submitted. It sends a POST request to the API endpoint '/tasks' and updates the component's state with the new todo.
@@ -76,12 +81,13 @@ class App extends React.Component {
   handleSubmit = event => {
     event.preventDefault();
     console.log("Sending task description to Spring-Server: "+this.state.taskdescription);
-    fetch("http://localhost:8080/tasks/add", {  // API endpoint (the complete URL!) to save a taskdescription
+    fetch("http://localhost:8080/tasks/add/header", {  // API endpoint (the complete URL!) to save a taskdescription
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "API-VERSION": "2"
       },
-      body: JSON.stringify({ taskdescription: this.state.taskdescription }) // both 'taskdescription' are identical to Task-Class attribute in Spring
+      body: JSON.stringify({ taskdescription: this.state.taskdescription , priority: this.state.priority}) // both 'taskdescription' are identical to Task-Class attribute in Spring
     })
     .then(response => {
       console.log("Receiving answer after sending to Spring-Server: ");
@@ -95,6 +101,7 @@ class App extends React.Component {
         todos: [...this.state.todos, {taskdescription: this.state.taskdescription}]
       });          // updates the component state with the new todos array.
       this.setState({taskdescription: ""});             // clear input field, preparing it for the next input
+      this.componentDidMount();
     })
     .catch(error => console.log(error))
   }
@@ -143,7 +150,7 @@ class App extends React.Component {
       <ul class="tasks">
         {todos.map((todo, index) => (
           <li key={todo.taskdescription}>
-            {"Task " + (index+1) + ": "+ todo.taskdescription}
+            {"Task " + (index+1) + ": "+ todo.taskdescription + ", Priority: "+ todo.priority}
             <button onClick={this.handleClick.bind(this, todo.taskdescription)}>Done</button>
           </li>
         ))}
@@ -166,7 +173,13 @@ class App extends React.Component {
             <input
               type="text"
               value={this.state.taskdescription}
-              onChange={this.handleChange}
+              onChange={this.handleChangeDesc}
+            />
+            <br />
+            <input 
+              type="number"
+              value={this.state.priority}
+              onChange={this.handleChangeNum}
             />
             <button type="submit">Absenden</button>
           </form>

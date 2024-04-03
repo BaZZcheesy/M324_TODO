@@ -40,8 +40,15 @@ public class TaskController {
 	}
 
 	@CrossOrigin
-	@PostMapping("/add")
-	public ResponseEntity<Task> addTask(@RequestBody Task task) {
+	@PostMapping(value = "/add/header", headers = "API-VERSION=1")
+	public ResponseEntity<Task> addTaskV1(@RequestBody Task task) {
+		task = taskrepo.save(task);
+		return ResponseEntity.ok(task);
+	}
+
+	@CrossOrigin
+	@PostMapping(value = "/add/header", headers = "API-VERSION=2")
+	public ResponseEntity<Task> addTaskV2(@RequestBody Task task) {
 		task = taskrepo.save(task);
 		return ResponseEntity.ok(task);
 	}
